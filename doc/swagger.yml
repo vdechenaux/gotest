@@ -1,0 +1,337 @@
+swagger: "2.0"
+info:
+  description: "Technical test @Sentryo"
+  version: "1.0"
+  title: "Star Wars API"
+basePath: "/"
+tags:
+- name: "peoples"
+- name: "starships"
+- name: "vehicles"
+paths:
+  /peoples:
+    get:
+      tags:
+      - "peoples"
+      summary: "List peoples"
+      produces:
+      - "application/json"
+      parameters:
+        - $ref: "#/parameters/page"
+        - $ref: "#/parameters/per_page"
+      responses:
+        200:
+          description: "Created"
+          schema:
+            type: object
+            properties:
+              metadata:
+                type: object
+                properties:
+                  page:
+                   $ref: "#/definitions/page"
+                  per_page:
+                   $ref: "#/definitions/per_page"
+                  total:
+                   $ref: "#/definitions/total"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/People"
+    post:
+      tags:
+      - "peoples"
+      summary: "Add a new people"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "People object"
+        required: true
+        schema:
+          $ref: "#/definitions/People"
+      responses:
+        201:
+          description: "Created"
+          schema:
+            $ref: "#/definitions/People"
+        400:
+          description: "Invalid input"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "height must be greater than 0 if provided"
+  /peoples/{peopleId}:
+    get:
+      tags:
+      - "peoples"
+      summary: "Get one people"
+      produces:
+      - "application/json"
+      parameters:
+        - $ref: "#/parameters/peopleId"
+      responses:
+        200:
+          description: "A people"
+          schema:
+            $ref: "#/definitions/People"
+    put:
+      tags:
+      - "peoples"
+      summary: "Update an existing people"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: "#/parameters/peopleId"
+      - in: "body"
+        name: "body"
+        description: "People object that needs to be updated"
+        required: true
+        schema:
+          $ref: "#/definitions/People"
+      responses:
+        200:
+          description: "Updated"
+          schema:
+            $ref: "#/definitions/People"
+        400:
+          description: "Invalid input"
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "height must be greater than 0 if provided"
+        404:
+          description: "People not found"
+    delete:
+      tags:
+      - "peoples"
+      summary: "Delete an existing people"
+      parameters:
+      - $ref: "#/parameters/peopleId"
+      responses:
+        204:
+          description: "Deleted"
+          schema:
+            $ref: "#/definitions/People"
+  /peoples/{peopleId}/starships:
+    get:
+      tags:
+      - "peoples"
+      - "starships"
+      summary: "Get starships of a people"
+      produces:
+      - "application/json"
+      parameters:
+        - $ref: "#/parameters/peopleId"
+      responses:
+        200:
+          description: "Starships"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Starship"
+  /peoples/{peopleId}/vehicles:
+    get:
+      tags:
+      - "peoples"
+      - "vehicles"
+      summary: "Get vehicles of a people"
+      produces:
+      - "application/json"
+      parameters:
+        - $ref: "#/parameters/peopleId"
+      responses:
+        200:
+          description: "Vehicles"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Vehicle"
+parameters:
+  page:
+    in: query
+    name: page
+    type: integer
+    description: "Page, default 1, numbering is 1-based"
+    required: false
+  per_page:
+    in: query
+    name: per_page
+    type: integer
+    description: "Page, default 30, max 30"
+    required: false
+  peopleId:
+    name: peopleId
+    in: path
+    description: "ID of people to update"
+    required: true
+    type: integer
+definitions:
+  page:
+    type: integer
+    example: 1
+    description: "Page, default 1, numbering is 1-based"
+  per_page:
+    type: integer
+    example: 30
+    description: "Page, default 30, max 30"
+  total:
+    type: integer
+    description: "Total number of peoples"
+    example: 87
+  People:
+    type: object
+    required:
+    - name
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: "Luke"
+      height:
+        type: integer
+        example: 175
+      mass:
+        type: number
+        example: 75.5
+      hair_color:
+        type: string
+        example: "brown"
+      skin_color:
+        type: string
+        example: "white"
+      eye_color:
+        type: string
+        example: "blue"
+      birth_year:
+        type: string
+        example: "22BBY"
+      gender:
+        type: string
+        example: "male"
+      created:
+        type: string
+        example: "2014-12-20T16:40:43.977000Z"
+        format: datetime
+      edited:
+        type: string
+        example: "2014-12-20T16:40:43.977000Z"
+        format: datetime
+  Vehicle:
+    type: object
+    required:
+    - name
+    - model
+    - manufacturer
+    - vehicle_class
+    properties:
+      id:
+        type: "integer"
+      name:
+          type: string
+          example: "Sand Crawler"
+      model:
+        type: string
+        example: "Digger Crawler"
+      manufacturer:
+        type: string
+        example: "Corellia Mining Corporation"        
+      cost_in_credits:
+        type: integer
+        example: 150000
+      length:
+        type: number
+        example: 36.8
+      max_atmosphering_speed:
+        type: number
+        example: 30
+      crew:
+        type: integer
+        example: 40
+      passengers:
+        type: integer
+        example: 30
+      cargo_capacity:
+        type: integer
+        example: 50000
+      consumables:
+        type: string
+        example: "2 months"
+      vehicle_class:
+        type: string
+        example: "wheeled"
+      created:
+        type: string
+        example: "2014-12-20T16:40:43.977000Z"
+        format: datetime
+      edited:
+        type: string
+        example: "2014-12-20T16:40:43.977000Z"
+        format: datetime
+  Starship:
+    type: object
+    required:
+    - name
+    - model
+    - manufacturer
+    - starship_class
+    properties:
+      id:
+        type: "integer"
+      name:
+          type: string
+          example: "Executor"
+      model:
+        type: string
+        example: "Executor-class star dreadnought"
+      manufacturer:
+        type: string
+        example: "Kuat Drive Yards, Fondor Shipyards"        
+      cost_in_credits:
+        type: integer
+        example: 1143350000
+      length:
+        type: number
+        example: 19000
+      max_atmosphering_speed:
+        type: number
+        example: 1000
+      crew:
+        type: integer
+        example: 279144
+      passengers:
+        type: integer
+        example: 38000
+      cargo_capacity:
+        type: integer
+        example: 250000000
+      consumables:
+        type: string
+        example: "6 years"
+      hyperdrive_rating:
+        type: number
+        example: 2.0
+      MGLT:
+        type: integer
+        example: 40
+      starship_class:
+        type: string
+        example: "Star dreadnought"
+      created:
+        type: string
+        example: "2014-12-20T16:40:43.977000Z"
+        format: datetime
+      edited:
+        type: string
+        example: "2014-12-20T16:40:43.977000Z"
+        format: datetime
